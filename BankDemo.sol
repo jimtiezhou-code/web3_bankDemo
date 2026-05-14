@@ -71,9 +71,13 @@ contract BankDemo {
     function withdraw() external onlyOwner {
         uint256 totalBalance = address(this).balance;
         require(totalBalance > 0, "No balance to withdraw");
-        payable(owner).transfer(totalBalance);
+        //1、执行转账，捕获结果
+        (bool success, ) = payable(owner).call{value: totalBalance}("");
+        //2、判断转账是否成功，如果失败，则抛出异常
+        require(success, "Withdraw failed");
         emit Withdraw(owner, totalBalance);
     }
+    
 
     // 获取当前合约ETH总余额
     function getTotalBalance() external view returns (uint256) {
