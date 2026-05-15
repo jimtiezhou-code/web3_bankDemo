@@ -26,12 +26,12 @@ contract BankDemo {
     }
 
     // 接收ETH转账时自动触发存款
-    receive() external payable {
+    receive() external payable virtual {
         deposit();
     }
 
     // 显式存款函数
-    function deposit() public payable {
+    function deposit() public payable virtual {
         require(msg.value > 0, "Amount must be > 0");
         balances[msg.sender] += msg.value;
         updateTopDepositors(msg.sender);
