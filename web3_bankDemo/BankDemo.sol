@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract BankDemo {
+interface IBank {
+    function deposit() external payable;
+    function withdraw() external;
+}
+
+contract BankDemo is IBank {
     // 使用映射记录每个用户的存款数据
     mapping(address => uint256) public balances;
     // 使用数组记录前三名存款地址
@@ -31,7 +36,7 @@ contract BankDemo {
     }
 
     // 显式存款函数
-    function deposit() public payable virtual {
+    function deposit() public payable virtual override {
         require(msg.value > 0, "Amount must be > 0");
         balances[msg.sender] += msg.value;
         updateTopDepositors(msg.sender);
@@ -68,7 +73,7 @@ contract BankDemo {
     }
 
     // 管理员提取所有ETH
-    function withdraw() external onlyOwner {
+    function withdraw() external virtual override onlyOwner {
         uint256 totalBalance = address(this).balance;
         require(totalBalance > 0, "No balance to withdraw");
         //1、执行转账，捕获结果
